@@ -1,20 +1,23 @@
 
 <template>
-  <nav>
-    <header>
-        <p>Ваш баланс: {{ balance }}</p>
-    </header>
-    <div>
-      <input type="text" id="search" v-model="search_str">
-      <select v-model="category_choice">
-        <option value="">Все категории</option>
-        <option v-for="category in uniqueCategories" :key="category" :value="category">
-          {{ category }}
-        </option>
-      </select>
-      <div>
-        <button @click="picked = 'asc'" :class="{ active: picked === 'asc' }">По возрастанию</button>
-        <button @click="picked = 'desc'" :class="{ active: picked === 'desc' }">По убыванию</button>
+  <nav id="navbar">
+    <div class="nav-container">
+      <p class="balance">Ваш баланс: {{ balance }}</p>
+      <div class="nav-controls">
+        <!--  -->
+        <input type="text" id="search" v-model="search_str" placeholder="Поиск по названию или категории">
+        <!--  -->
+        <select v-model="category_choice">
+          <option value="">Все категории</option>
+          <option v-for="category in uniqueCategories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
+        <!--  -->
+        <div class="sort-buttons">
+          <button @click="picked = 'asc'" :class="{ active: picked === 'asc' }">По возрастанию</button>
+          <button @click="picked = 'desc'" :class="{ active: picked === 'desc' }">По убыванию</button>
+        </div>
       </div>
     </div>
   </nav>
