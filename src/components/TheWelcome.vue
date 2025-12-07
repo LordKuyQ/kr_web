@@ -1,10 +1,5 @@
 
 <template>
-  <header>
-   <h1>Торговая площадка СуНуХвча:</h1>
-   <img :src="imgLink"/>
-   <br/>
- </header>
   <main>
     <header>
         <p>Ваш баланс: {{ balance }}</p>
