@@ -1,27 +1,35 @@
 
 <template>
-  <header>
-   <h1>Торговая площадка СуНуХвча:</h1>
-   <img :src="imgLink"/>
-   <br/>
- </header>
-  <main>
-    <header>
-        <p>Ваш баланс: {{ balance }}</p>
-    </header>
-    <body>
-      <input type="text" id="search" v-model="search_str">
-      <select v-model="category_choice">
-        <option value="">Все категории</option>
-        <option v-for="category in uniqueCategories" :key="category" :value="category">
-          {{ category }}
-        </option>
-      </select>
-      <div>
-        <button @click="picked = 'asc'" :class="{ active: picked === 'asc' }">По возрастанию</button>
-        <button @click="picked = 'desc'" :class="{ active: picked === 'desc' }">По убыванию</button>
+  <nav id="navbar">
+    <div class="nav-container">
+      <p class="balance">Ваш баланс: {{ balance }}</p>
+      <div class="nav-controls">
+        <!--  -->
+        <input type="text" id="search" v-model="search_str" placeholder="Поиск по названию или категории">
+        <!--  -->
+        <select v-model="category_choice">
+          <option value="">Все категории</option>
+          <option v-for="category in uniqueCategories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
+        <!--  -->
+        <div class="sort-buttons">
+          <button @click="picked = 'asc'" :class="{ active: picked === 'asc' }">По возрастанию</button>
+          <button @click="picked = 'desc'" :class="{ active: picked === 'desc' }">По убыванию</button>
+        </div>
       </div>
-      <div class="block" v-for="(i, index) in filteredAndSortedProducts" :key="i.id">
+    </div>
+  </nav>
+  <!--  -->
+  <main>
+    <div class="hero-section">
+      <img :src="imgLink" class="hero-image"/>
+      <h1 class="hero-title">Торговая площадка СуНуХвча:</h1>
+    </div>
+    <!--  -->
+    <div class="products-container">
+      <div class="product-card" v-for="(i, index) in filteredAndSortedProducts" :key="i.id">
         <p>Название: {{ i.name }}</p>
         <hr/>
         <p>Категория: {{i.category}}</p>
@@ -31,9 +39,8 @@
         <br/>
         <br/>
       </div>
-    </body>
+    </div>
   </main>
-
 </template>
 
 
@@ -41,6 +48,7 @@
     export default {
       data(){
         return{
+          balance: 6001,
           products: [
               {
                   id: 1,
@@ -83,24 +91,24 @@
       computed: {
         filteredAndSortedProducts() {
           let result = this.products;
-
+          //////
           if (this.search_str) {
             result = result.filter(product =>
               product.name.toLowerCase().includes(this.search_str.toLowerCase()) ||
               product.category.toLowerCase().includes(this.search_str.toLowerCase())
             );
           }
-
+          //////
           if (this.category_choice) {
             result = result.filter(product => product.category === this.category_choice);
           }
-
+          //////
           if (this.picked === 'asc') {
             result = result.sort((a, b) => a.price - b.price);
           } else if (this.picked === 'desc') {
             result = result.sort((a, b) => b.price - a.price);
           }
-
+          //////
           return result;
         },
 
@@ -111,15 +119,22 @@
       },
       methods:{
         clickBuy(index, item){
-            if(item==null){
-          return;
-        }
-        this.products[index].stock = this.products[index].stock-1
+          if(item!=null && 
+          this.balance >= this.products[index].price &&
+          this.products[index].stock > 0){
+            this.products[index].stock = this.products[index].stock-1;
+            this.balance = this.balance - this.products[index].price;
+          }
+          else{
+            return;
+          }
         },
+        //////
         findProductIndex(productId) {
           return this.products.findIndex(product => product.id === productId);
         }
       },
+      // при загрузке сайта
       mounted(){
       }
     }
@@ -131,50 +146,139 @@
 <style>
 * {
 	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-  overflow-x: hidden;
-}
-
-header{
-  display: flex;
-  justify-content: center;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  font-family: Arial, sans-serif;
-  justify-content: left;
-}
-
-footer {
-  padding-left: 1%;
-  margin: 10px;
-  position: fixed;
-  bottom: 0;
+#navbar {
   width: 100%;
-  overflow: hidden;
+  background: #0a0e27;
+  padding: 1rem;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px); 
 }
 
-h1 {
-  width:100%;
+.nav-container {
   display: flex;
-  justify-content: left;
-  margin-left: 1%;
-  font-family:'Merienda';
-  font-size: 56px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1280px;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.balance {
+  color: white;
   font-weight: bold;
 }
 
-img {
+.nav-controls {
   display: flex;
-
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.block{
+#search {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.sort-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sort-buttons button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.sort-buttons button.active {
+  background: #007bff;
+  color: white;
+}
+
+main {
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 100px; 
+}
+
+.hero-section {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 800px;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  color: white;
+  font-size: 2rem;
+}
+
+.products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
   width: 100%;
 }
+
+.product-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  background: white;
+  color: black;
+}
+
+.product-card p {
+  margin-bottom: 0.5rem;
+}
+
+.product-card button {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-card button:hover {
+  background: #1a2530;
+}
+
+html, body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	background: #0a0e27;
+	color: #ffffff;
+	overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+}
+
 </style>
