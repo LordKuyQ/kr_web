@@ -1,38 +1,53 @@
 # kr_web
 
-This template should help get you started developing with Vue 3 in Vite.
+Реализация каталога продуктов с фильтрацией и сортировкой
 
-## Recommended IDE Setup
+Цель: Создать интерфейс для отображения каталога товаров, с возможностью фильтрации,
+сортировки и поиска.
+Требования:
+1. Функциональность
+- Отобразить список товаров (массива объектов), где каждый товар содержит:
+- `id`, `name`, `category`, `price`, `stock` (количество в наличии).
+- Есть элементы управления:
+- Text input для поиска по названию.
+- Выпадающий список для фильтрации по категории.
+- Кнопки для сортировки по цене (по возрастанию/убыванию).
+- В списке отображаются только те товары, которые соответствуют текущему поиску и фильтру.
+- В каждом товаре есть кнопка &quot;Купить&quot;, которая уменьшает количество на складе (`stock`) на 1.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+2. Логика
+- В data:
+- массив товаров.
+- строка поиска.
+- выбранная категория.
+- направление сортировки.
+- В методах:
+- Обработчик поиска и фильтрации.
+- Сортировка.
+- Обработка покупки.
 
-## Recommended Browser Setup
+3. Доп. функционал
+- Сохранять состояние списка товаров или выбранных фильтров в localStorage и восстанавливать
+при перезагрузке.
+- Реализовать возможность сброса фильтров и сортировки.
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Критерии оценки:
+- Корректность функционала.
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
+- Структура и читаемость кода.
+- Работа фильтрации, сортировки и поиска.
+- Влияние дополнительных заданий на полноту реализации.
+- ВОЗМОЖНОСТЬ ОБЪЯСНИТЬ ЧТО НАПИСАНО
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
 
-```sh
-npm run build
-```
+![[chrome_syK9qQnVTp.png]]
+
+![[chrome_TQUOsjT0eU.png]]
+
+![[chrome_wSf29y8wkv.png]]
+
+![[chrome_PAJTaRvbCR.png]]
