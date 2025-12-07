@@ -119,11 +119,13 @@
       },
       methods:{
         clickBuy(index, item){
-          if(item!=null && 
+          if(item!=null &&
           this.balance >= this.products[index].price &&
           this.products[index].stock > 0){
             this.products[index].stock = this.products[index].stock-1;
             this.balance = this.balance - this.products[index].price;
+
+            this.saveToLocalStorage();
           }
           else{
             return;
@@ -132,10 +134,52 @@
         //////
         findProductIndex(productId) {
           return this.products.findIndex(product => product.id === productId);
+        },
+
+        saveToLocalStorage() {
+          localStorage.setItem('userBalance', JSON.stringify(this.balance));
+
+          localStorage.setItem('productsData', JSON.stringify(this.products));
+
+          localStorage.setItem('searchString', JSON.stringify(this.search_str));
+          localStorage.setItem('categoryChoice', JSON.stringify(this.category_choice));
+          localStorage.setItem('sortPreference', JSON.stringify(this.picked));
+        },
+
+        loadFromLocalStorage() {
+          const savedBalance = localStorage.getItem('userBalance');
+          if (savedBalance !== null) {
+            this.balance = JSON.parse(savedBalance);
+          }
+
+          const savedProducts = localStorage.getItem('productsData');
+          if (savedProducts !== null) {
+            this.products = JSON.parse(savedProducts);
+          }
+
+          const savedSearch = localStorage.getItem('searchString');
+          if (savedSearch !== null) {
+            this.search_str = JSON.parse(savedSearch);
+          }
+
+          const savedCategory = localStorage.getItem('categoryChoice');
+          if (savedCategory !== null) {
+            this.category_choice = JSON.parse(savedCategory);
+          }
+
+          const savedSort = localStorage.getItem('sortPreference');
+          if (savedSort !== null) {
+            this.picked = JSON.parse(savedSort);
+          }
         }
       },
       // при загрузке сайта
       mounted(){
+        this.loadFromLocalStorage();
+      },
+
+      beforeUnmount() {
+        this.saveToLocalStorage();
       }
     }
 
@@ -159,7 +203,7 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  backdrop-filter: blur(10px); 
+  backdrop-filter: blur(10px);
 }
 
 .nav-container {
@@ -220,7 +264,7 @@ main {
   padding: 1rem;
   max-width: 1280px;
   margin: 0 auto;
-  padding-top: 100px; 
+  padding-top: 100px;
 }
 
 .hero-section {
