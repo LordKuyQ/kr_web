@@ -10,37 +10,37 @@
         <p>Ваш баланс: {{ balance }}</p>
     </header>
     <body>
-        <input type="text" id="search" v-model="search_str">
-
-        <select name="" id=""></select>
-
-        <input type="radio" id="asc" v-model="picked"  @change="sortProducts()">По возрастанию</input>
-        <input type="radio" id="desc" v-model="picked"  @change="sortProducts()">По уменьшению</input>
-
-      <div class="block" v-for="(i, index) in products">
+      <input type="text" id="search" v-model="search_str">
+      <select v-model="category_choice">
+        <option value="">Все категории</option>
+        <option v-for="category in uniqueCategories" :key="category" :value="category">
+          {{ category }}
+        </option>
+      </select>
+      <div>
+        <button @click="picked = 'asc'" :class="{ active: picked === 'asc' }">По возрастанию</button>
+        <button @click="picked = 'desc'" :class="{ active: picked === 'desc' }">По убыванию</button>
+      </div>
+      <div class="block" v-for="(i, index) in filteredAndSortedProducts" :key="i.id">
         <p>Название: {{ i.name }}</p>
         <hr/>
         <p>Категория: {{i.category}}</p>
         <p>Цена: {{ i.price }}</p>
         <p>Количество: {{ i.stock }}</p>
-        <button @click="clickBuy(index, i)">купить</button>
-        <label>{{ search_str }}</label>
+        <button @click="clickBuy(findProductIndex(i.id), i)">купить</button>
         <br/>
         <br/>
       </div>
     </body>
   </main>
-  
+
 </template>
 
 
   <script>
-  
-  //import axios from 'axios';
     export default {
       data(){
         return{
-            balance: 6001,
           products: [
               {
                   id: 1,
@@ -75,9 +75,38 @@
               }
           ],
           search_str: "",
-          caterogy_choice: "",
-          sort: true,
+          category_choice: "",
+          picked: "",
           imgLink: "https://i.pinimg.com/236x/1a/88/34/1a8834f8bb9de39116cd71d182b13e77.jpg"
+        }
+      },
+      computed: {
+        filteredAndSortedProducts() {
+          let result = this.products;
+
+          if (this.search_str) {
+            result = result.filter(product =>
+              product.name.toLowerCase().includes(this.search_str.toLowerCase()) ||
+              product.category.toLowerCase().includes(this.search_str.toLowerCase())
+            );
+          }
+
+          if (this.category_choice) {
+            result = result.filter(product => product.category === this.category_choice);
+          }
+
+          if (this.picked === 'asc') {
+            result = result.sort((a, b) => a.price - b.price);
+          } else if (this.picked === 'desc') {
+            result = result.sort((a, b) => b.price - a.price);
+          }
+
+          return result;
+        },
+
+        uniqueCategories() {
+          const categories = this.products.map(product => product.category);
+          return [...new Set(categories)];
         }
       },
       methods:{
@@ -86,21 +115,15 @@
           return;
         }
         this.products[index].stock = this.products[index].stock-1
-        this.balance = this.balance - this.products[index].price
-        } ,
-        sort(){
-            this.products.sort();
         },
-        sortedArray() {
-            
+        findProductIndex(productId) {
+          return this.products.findIndex(product => product.id === productId);
         }
       },
-      // при загрузке сайта
       mounted(){
-        this.getBooks();
       }
     }
-  
+
   </script>
 
 
@@ -148,7 +171,7 @@ h1 {
 
 img {
   display: flex;
-  
+
 }
 
 .block{
